@@ -1,0 +1,43 @@
+baseURL = 'https://example.org/'
+languageCode = 'en-us'
+title = 'Zack Robinson'
+copyright = "Zack Robinson"
+
+[frontmatter]
+  lastmod = ['lastmod', ':fileModTime', ':default']
+
+[params]
+subtitle = "Some thoughts on software, systems, and special interests."
+paginate = 10
+mode = 'toggle'
+reading_speed = 225
+
+[[menu.main]]
+name = "Home"
+url = "/"
+weight = 1
+
+[[menu.main]]
+name = "Archive"
+url = "/posts"
+weight = 2
+
+[[menu.main]]
+name = "About"
+url = "https://robinsonz.me"
+weight = 2
+
+[markup]
+  [markup.highlight]
+    anchorLineNos = false
+    codeFences = true
+    guessSyntax = false
+    hl_Lines = ''
+    hl_inline = false
+    lineAnchors = ''
+    lineNoStart = 1
+    lineNumbersInTable = true
+    noClasses = true
+    noHl = false
+    style = 'nord'
+    tabWidth = 4
