@@ -30,14 +30,14 @@ Last semester, we took a course entitled "Principles of Computer Architecture," 
 
 Unfortunately, this turned out to be WAY out of our wheelhouse with our limited experience, time, documentation, and hardware capability. We instead focused on displaying one image over VGA, which we…mostly succeeded in doing. However, we were not deterred from learning more about how to make this thing tick, so this fall we decided to ask Prof. Delano to be our faculty advisor as we continued our learning for half a credit. Our goals, as outlined above, were to learn more about the Cyclone V FPGA platform (and the toolchains used to write hardware and software for it) and to play back images from an external storage medium.
 
-{{<figure src = "/img/framebuffer/first-attempt.png" title = "A picture from our first attempt">}}
+{{<figure src = first-attempt.png title = "A picture from our first attempt">}}
 
 
 ## Part 1: Making Mifs and Memories
 
 Our previous board, the DE0-CV, had some rather unhelpful examples. This new board gave us some cause for optimism: it had better specs and, more importantly, some better examples of how to work with image files. The default out-of-the-box software displays a color image on the VGA output.
 
-{{<figure src = "/img/framebuffer/color-image.jpg">}}
+{{<figure src = color-image.jpg >}}
 
 When we looked into the Verilog, we found this in the top-level module:
 
@@ -144,7 +144,7 @@ It wouldn’t be terribly hard to write a bit of software to generate these file
 After getting the PowerShell wrapper working, we were able to load arbitrary bitmaps into the ROM and display them on the 
 screen:
 
-{{<figure src = "/img/framebuffer/sccs-no-raleway.jpg" title = "Context: we wanted to display the SCCS logo but Thomas didn’t have the font installed on his local computer.">}}
+{{<figure src = sccs-no-raleway.jpg title = "Context: we wanted to display the SCCS logo but Thomas didn’t have the font installed on his local computer.">}}
 
 At this point we were back to where we had left off last semester, except on a nicer board and we understood everything a lot better.
 
@@ -164,7 +164,7 @@ The DE10 came with two SDRAM testing examples: one in straight Verilog, very sim
 
 The Nios II is a "soft core:" an entire industrial-grade (ish) central processing unit implemented completely within the FPGA. You drop it in just like any other module. The examples using the Nios, however, are not handwritten Verilog: instead, they use Qsys, which is a graphical system integration tool that lets you define modules at a higher level and plug them into each other much more easily.
 
-{{<figure src = "/img/framebuffer/qsys.png" title = "An example Qsys design.">}}
+{{<figure src = qsys.png title = "An example Qsys design.">}}
 
 The Nios uses the Avalon memory-mapped interface to communicate with other parts of the FPGA design (more on that later), with the JTAG debug interface for talking to the development computer. We found it fairly easy to compile and deploy the hardware design onto the FPGA (Qsys generates Verilog files which you compile using the standard Quartus compilation process); software was another story.
 
@@ -185,7 +185,7 @@ The nice thing about these cores is that Qsys is actually very smart about them.
 
 There was one point of confusion, though: in Qsys, we found two almost-identical sets of video IP cores. "Frame Buffer" and "Frame Buffer II (4K Ready)," "Clocked Video Output" and "Clocked Video Output II (4K Ready)," and so on. We’re still not actually sure what the difference between these two sets of cores are (although we found diverging documentation that seems to indicate that they have different control registers), but all we know is that nothing works when using the first set, and we needed to use the second set ("4K Ready") to get anything at all to show up on the screen. After we figured that out, though, we were able to use a Test Pattern Generator (4K Ready) plugged into a Clocked Video Output (4K Ready), that we then wired to the VGA output lines on the FPGA. This correctly displayed a test pattern on the screen:
 
-{{<figure src = "/img/framebuffer/test-pattern.png" title = "A test pattern!">}}
+{{<figure src = test-pattern.png title = "A test pattern!">}}
 
 We then took this same setup of a test pattern feeding into a clocked video output and put it at the bottom of the Nios II example project. After some further issues (we had set another clock frequency wrong and hadn’t realized it, and there were several naming issues), we managed to get the test pattern running alongside the SDRAM test in the same FPGA design.
 
@@ -267,7 +267,7 @@ Our next step was to use the [Frame Buffer II](https://www.intel.com/content/www
 
 The frame buffer component has three modes: Frame Writer (just puts frames in RAM), Frame Reader (just reads frames from RAM), and buffer (both writes and reads). We first tried to put the frame buffer component in the middle of the video stream, just to see it work. When in buffer mode, the buffer takes a video input, talks to the SDRAM controller to store the frames, and then outputs buffered frames on its video output line. This worked fine.
 
-{{<figure src = "/img/framebuffer/framebuffer2.png" caption = "_Credit: [Frame Buffer II Documentation](https://www.intel.com/content/www/us/en/docs/programmable/683416/19-4/frame-buffer-ii-ip-core.html)_">}}
+{{<figure src = framebuffer2.png caption = "_Credit: [Frame Buffer II Documentation](https://www.intel.com/content/www/us/en/docs/programmable/683416/19-4/frame-buffer-ii-ip-core.html)_">}}
 
 We then tried to put the frame buffer in Frame Reader mode, where it would read from whatever blocks of SDRAM we told it to read from. As a test, in lieu of writing a bunch of code to write an actual image to RAM, we instead used the psuedo-random data that had already been written by the memory test routine.
 
@@ -294,7 +294,7 @@ At this point, we were pretty much at a loss. We could potentially have tried to
 
 Part of the point of designing systems for an FPGA platform is ease of debugging. The USB interface on the board supports JTAG, which is a (somewhat) standard protocol for debugging systems and software and the earliest stages of bringup. JTAG stands for Joint Test Action Group, which is the group that founded the "standard" (it varies substantially for different architectures, adapters, boards, and platforms, so to call it a "standard" is somewhat misleading — note the many conditionals on the [Wikipedia page](https://en.wikipedia.org/wiki/JTAG) such as "The TRST pin is an optional active-low reset to the test logic, usually asynchronous, but sometimes synchronous, depending on the chip."). JTAG is a complex protocol and transmits different kinds of data differently, so Altera/Intel has set up QSYS to hide extra fabrics in the backend that make adding JTAG-based trace systems way easier. For the Video Image Processing suite, the recommended setup is to use an Avalon-ST Video Monitor, which takes samples of passing frames on an Avalon-ST streaming bus, and connect it to a Trace System IP core, which is a more generic component that exposes traceable components over JTAG via the System Console.
 
-{{<figure src = "/img/framebuffer/jtag.png" caption = "_From [Video and Image Processing Suite Intel® FPGA IP](https://www.intel.com/content/www/us/en/products/details/fpga/intellectual-property/dsp/video-image-processing-suite.html)_">}}
+{{<figure src = jtag.png caption = "_From [Video and Image Processing Suite Intel® FPGA IP](https://www.intel.com/content/www/us/en/products/details/fpga/intellectual-property/dsp/video-image-processing-suite.html)_">}}
 
 While attempting to initialize the Frame Buffer II IP core in various ways, this system was extremely helpful because it allowed us to see not only what the VGA output showed, but also the frames in transit at various stages. To set up this system, we placed an Avalon-ST Video Monitor between our Test Pattern Generator and our Frame Buffer, and hooked up a Trace System. These systems are configured in the System Console, where we set parameters (trace system to collect from, types of data collected, and capture rate) and start/stop packet capture. For each transmitted frame, there are two discrete packets sent: video control and video data. The control packet contains metadata about and parameters passed with the stream, whereas the data packet contains the frame data itself. System Console can reconstruct an image from sampling this data (hence needing to tune the sample rate). We found that a capture rate of ~2500 per 1000000 pixels worked well, as sampling too high caused underrun and sampling too low made the picture useless.
 
