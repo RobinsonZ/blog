@@ -13,7 +13,7 @@ mode = 'toggle'
 reading_speed = 225
 
 [[menu.main]]
-name = "Home"
+name = "Blog"
 url = "/"
 weight = 1
 
