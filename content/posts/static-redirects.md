@@ -176,7 +176,7 @@ At this point, I can add static redirects to my heart's content, just by adding 
 
 ## Speeding It Up A Trivial Amount
 
-You might wonder why I chose to write the redirect HTML file to `something/index.html`, not `something.html`. The latter would work on GitHub Pages, because [`/foo` will serve `/foo.html` if it exists](https://til.simonwillison.net/github/github-pages#user-content-foo-will-serve-content-from-foohtml-if-it-exists); but in that case, `robinsonz.me/something/` will 404. With the `something/index.html` setup, `robinsonz.me/something` will first 301 redirect you to `/something/` and then serve the page; i.e. both `/something` and `/something/` will work fine. But it's marginally slower.
+You might wonder why I chose to write the redirect HTML file to `something/index.html`, not `something.html`. The latter would work on GitHub Pages, because [/foo will serve /foo.html if it exists](https://til.simonwillison.net/github/github-pages#user-content-foo-will-serve-content-from-foohtml-if-it-exists); but in that case, `robinsonz.me/something/` will 404. With the `something/index.html` setup, `robinsonz.me/something` will first 301 redirect you to `/something/` and then serve the page; i.e. both `/something` and `/something/` will work fine. But it's marginally slower.
 
 How can we solve this? Just make `clientRedirect` write two output files. We have to tweak the setup a tiny bit: `clientRedirect` now returns a list, which we then incorporate into the plugins list using [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax). And to be extra cute, we'll use `map` instead of copy-pasting the thing twice.
 
