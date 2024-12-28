@@ -172,7 +172,17 @@ module.exports = {
 };
 ```
 
-At this point, I can add static redirects to my heart's content, just by adding another `clientRedirect` entry to the `webpack.config.js`.
+At this point, I can add static redirects to my heart's content, just by adding another `clientRedirect` entry to the `webpack.config.js`. In real usage as of right now, I mostly just want to redirect to my Medium post:
+
+```js
+plugins: [
+    // ...
+    clientRedirect("slate", "https://medium.com/@zkislakrobinson/developing-slate-f751be5fa3db"),
+    // ...
+  ],
+```
+
+And if you go to [robinsonz.me/slate](https://robinsonz.me/slate), you'll see that the redirect works!
 
 ## Speeding It Up A Trivial Amount
 
@@ -200,6 +210,7 @@ module.exports = {
     // ...
     ...clientRedirect("something", "https://example.com"),
     ...clientRedirect("google", "https://google.com"),
+    ...clientRedirect("slate", "https://medium.com/@zkislakrobinson/developing-slate-f751be5fa3db"),
     // ...
   ],
 };
