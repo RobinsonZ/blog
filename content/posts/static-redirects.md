@@ -80,7 +80,7 @@ module.exports = {
 Like the HTML file, there are three parts to this.
 
 - The `template` parameter obviously sets it up to pull from `src/redirect.html`.
-- The `filename` parameter tells Webpack to output the result of the compilation (really just minifying the HTML) to `something/index.html` in the output directory.[^subdir]
+- The `filename` parameter tells Webpack to output the result of the compilation (really just minifying the HTML) to `something/index.html` in the output directory.
 - `chunks: []` instructs Webpack _not_ to inject the things it normally injects. If this were another webpage, we'd want to also be downloading the whole Javascript bundle, CSS, etc. but I don't need any of that to fire a redirect.
 
 If I run `npm start` and go to `localhost:8080/something`, I see the "If you are not redirected automatically..." text for half a second before bouncing to `example.com`.
