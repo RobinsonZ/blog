@@ -80,7 +80,7 @@ module.exports = {
 Like the HTML file, there are three parts to this.
 
 - The `template` parameter obviously sets it up to pull from `src/redirect.html`.
-- The `filename` parameter tells Webpack to output the result of the compilation (really just minifying the HTML) to `something/index.html` in the output directory. 
+- The `filename` parameter tells Webpack to output the result of the compilation (really just minifying the HTML) to `something/index.html` in the output directory.[^subdir]
 - `chunks: []` instructs Webpack _not_ to inject the things it normally injects. If this were another webpage, we'd want to also be downloading the whole Javascript bundle, CSS, etc. but I don't need any of that to fire a redirect.
 
 If I run `npm start` and go to `localhost:8080/something`, I see the "If you are not redirected automatically..." text for half a second before bouncing to `example.com`.
@@ -161,7 +161,6 @@ const clientRedirect = (slug, target) =>
     },
   });
 
-
 module.exports = {
   // ...
   plugins: [
@@ -175,6 +174,40 @@ module.exports = {
 
 At this point, I can add static redirects to my heart's content, just by adding another `clientRedirect` entry to the `webpack.config.js`.
 
+## Speeding It Up A Trivial Amount
+
+You might wonder why I chose to write the redirect HTML file to `something/index.html`, not `something.html`. The latter would work on GitHub Pages, because [`/foo` will serve `/foo.html` if it exists](https://til.simonwillison.net/github/github-pages#user-content-foo-will-serve-content-from-foohtml-if-it-exists); but in that case, `robinsonz.me/something/` will 404. With the `something/index.html` setup, `robinsonz.me/something` will first 301 redirect you to `/something/` and then serve the page; i.e. both `/something` and `/something/` will work fine. But it's marginally slower.
+
+How can we solve this? Just make `clientRedirect` write two output files. We have to tweak the setup a tiny bit: `clientRedirect` now returns a list, which we then incorporate into the plugins list using [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax). And to be extra cute, we'll use `map` instead of copy-pasting the thing twice.
+
+```js
+const clientRedirect = (slug, target) =>
+  [`${slug}.html`, `${slug}/index.html`].map(
+    (outfile) =>
+      new HtmlWebpackPlugin({
+        template: path.resolve(__dirname, "src/redirect.html"),
+        filename: outfile,
+        chunks: [], // don't load JS
+        templateParameters: {
+          redirectUrl: target,
+        },
+      })
+  );
+
+module.exports = {
+  // ...
+  plugins: [
+    // ...
+    ...clientRedirect("something", "https://example.com"),
+    ...clientRedirect("google", "https://google.com"),
+    // ...
+  ],
+};
+```
+
+Note the preceding `...` on each of the clientRedirect calls.
+
+Now, when we build this site and put it on GitHub Pages, both `/something` and `/something/` immediately serve the (client-side)redirect HTML without any (server-side) redirects. This is a pretty trivial speedup in practice. But it's fun!
 
 ## Summary
 
