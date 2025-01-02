@@ -3,7 +3,7 @@ date = '2024-12-27'
 title = 'Using Github Pages as a URL Shortener'
 +++
 
-This blog is, of course, not a 100% complete collection of everything I've done. Even ignoring everything that's behind a corporate firewall, a lot of my work is hosted elsewhere and not transcluded here. Like a [project report I wrote for a class at Penn](https://medium.com/@zkislakrobinson/developing-slate-f751be5fa3db), which is hosted on Medium because that's where we had to put it for that class. But I like to keep my URLs aesthetically coherent, particularly on public-facing documents like my [resume](https://robinsonz.me/robinsonz-resume.pdf) (pdf). For any arbitrary piece of work, I want to be able to point people to `robinsonz.me/something`, like it's my personal `bit.ly`.
+Even ignoring everything that's behind a corporate firewall, a lot of my work is hosted elsewhere and not transcluded on this blog. Like a [project report I wrote for a class at Penn](https://medium.com/@zkislakrobinson/developing-slate-f751be5fa3db), which is hosted on Medium because that's where we had to put it for that class. But I like to keep my URLs aesthetically coherent, particularly on public-facing documents like my [resume](https://robinsonz.me/robinsonz-resume.pdf) (pdf). For any arbitrary piece of work, I want to be able to point people to `robinsonz.me/something`, like it's my personal `bit.ly`.
 
 The problem: as of right now, all my stuff is hosted on [GitHub Pages](https://pages.github.com/), because it's by far the easiest way to put static files on the Internet for free. I don't need to worry about any of the server administration, potential load issues, etc., but I don't get any dynamic logic. So, making `robinsonz.me/something` just give you a 301 isn't possible. Instead, I use meta tags, a tiny bit of client-side JS, and some Webpack templating to easily add new shortlinks to my website as needed.
 
@@ -35,8 +35,8 @@ The fundamental thing we need to do to implement a redirect from `robinsonz.me/s
 This file tries to redirect you three different ways.
 
 - Using the [meta refresh directive](https://en.wikipedia.org/wiki/Meta_refresh) with a wait time of zero seconds, to immediately trigger a "auto-refresh" of the page and send us to `https://example.com`.
-- As a backup in case the browser blocks the meta refresh directive for some reason (or doesn't support it), I also run one line of Javascript that sets the window location to `https://example.com` as soon as the page loads.
-- And just in case, if a browser can't or won't run Javascript, I provide a manual link that the user can click.
+- As a backup in case the browser blocks the meta refresh directive for some reason (or doesn't support it), I also run one line of JavaScript that sets the window location to `https://example.com` as soon as the page loads.
+- And just in case, if a browser can't or won't run JavaScript, I provide a manual link that the user can click.
 
 Now I've got my HTML. So how do I get it up on the internet?
 
@@ -56,7 +56,7 @@ module.exports = {
 };
 ```
 
-(I've omitted a lot of other configuration for brevity, as there's a bunch of unrelated stuff in my `webpack.config.js`. For a full working example of this and other stuff, see my website's [GitHub repo](<(https://github.com/RobinsonZ/robinsonz.github.io)>).)
+(I've omitted a lot of other configuration for brevity, as there's a bunch of unrelated stuff in my `webpack.config.js`. For a full working example of this and other stuff, see my website's [GitHub repo](https://github.com/RobinsonZ/robinsonz.github.io).)
 
 To make the original redirect work, I just need to put that above HTML in `src/redirect.html` and add another `HtmlWebpackPlugin`:
 
@@ -81,11 +81,11 @@ Like the HTML file, there are three parts to this.
 
 - The `template` parameter obviously sets it up to pull from `src/redirect.html`.
 - The `filename` parameter tells Webpack to output the result of the compilation (really just minifying the HTML) to `something/index.html` in the output directory.
-- `chunks: []` instructs Webpack _not_ to inject the things it normally injects. If this were another webpage, we'd want to also be downloading the whole Javascript bundle, CSS, etc. but I don't need any of that to fire a redirect.
+- `chunks: []` instructs Webpack _not_ to inject the things it normally injects. If this were another webpage, we'd want to also be downloading the whole JavaScript bundle, CSS, etc. but I don't need any of that to fire a redirect.
 
 If I run `npm start` and go to `localhost:8080/something`, I see the "If you are not redirected automatically..." text for half a second before bouncing to `example.com`.
 
-An important caveat, before we go any further: a normal 301 redirect is good for SEO and caching, becasue web crawlers will see it and assign any "link credit" from that link to the page it's actually pointing to. Google and other web crawlers won't bother to process the client-side redirect here at all, which means any links to the redirected page are useless for SEO. (They're also slower.) So if you're creating a hyperlink (or getting other people add links on their sites, or bookmarking it), you should link directly to `example.com`, _not_ link to the redirect. In other words, these shortlinks are good for giving out on a one-time basis for brevity, but shouldn't be used anywhere that you don't expect humans to be reading the URL and typing it in by hand.
+An important caveat, before we go any further: a normal 301 redirect is good for SEO and caching, because web crawlers will see it and assign any "link credit" from that link to the page it's actually pointing to. Google and other web crawlers won't bother to process the client-side redirect here at all, which means any links to the redirected page are useless for SEO. (They're also slower.) So if you're creating a hyperlink (or getting other people add links on their sites, or bookmarking it), you should link directly to `example.com`, _not_ link to the redirect. In other words, these shortlinks are good for giving out on a one-time basis for brevity, but shouldn't be used anywhere that you don't expect humans to be reading the URL and typing it in by hand.
 
 ## Making it Reusable
 
@@ -148,7 +148,7 @@ new HtmlWebpackPlugin({
 }),
 ```
 
-And the `webpack.config.js` file is just Javascript, so I can actually package it up into a function:
+And the `webpack.config.js` file is just JavaScript, so I can actually package it up into a function:
 
 ```js
 const clientRedirect = (slug, target) =>
@@ -188,7 +188,7 @@ And if you go to [robinsonz.me/slate](https://robinsonz.me/slate), you'll see th
 
 You might wonder why I chose to write the redirect HTML file to `something/index.html`, not `something.html`. The latter would work on GitHub Pages, because [/foo will serve /foo.html if it exists](https://til.simonwillison.net/github/github-pages#user-content-foo-will-serve-content-from-foohtml-if-it-exists); but in that case, `robinsonz.me/something/` will 404. With the `something/index.html` setup, `robinsonz.me/something` will first 301 redirect you to `/something/` and then serve the page; i.e. both `/something` and `/something/` will work fine. But it's marginally slower.
 
-How can we solve this? Just make `clientRedirect` write two output files. We have to tweak the setup a tiny bit: `clientRedirect` now returns a list, which we then incorporate into the plugins list using [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax). And to be extra cute, we'll use `map` instead of copy-pasting the thing twice.
+How can we solve this? Just make `clientRedirect` write two output files, one at `something/index.html` and one at `something.html`. We have to tweak the setup a tiny bit: `clientRedirect` now returns a list, which we then incorporate into the plugins list using [spread syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax). And to be extra cute, we'll use `map` instead of copy-pasting the thing twice.
 
 ```js
 const clientRedirect = (slug, target) =>
