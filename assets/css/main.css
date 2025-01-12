@@ -33,6 +33,12 @@ body{
   color: #fff;
 }
 
+::-moz-selection {
+  background: var(--maincolor);
+  color: #fff;
+  text-shadow: none;
+}
+
 p {
   font-family: 'Lato', sans-serif;
   line-height: 1.5;
