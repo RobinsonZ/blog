@@ -16,7 +16,7 @@
 }
 html {
   color: #232333;
-  font-family: 'Host Grotesk', monospace;
+  font-family: 'Source Serif 4', serif;
   font-size: 15px;
   line-height: 1.6em;
 }
@@ -166,6 +166,7 @@ header .main {
 h1, h2, h3, h4, h5, h6 {
   font-size: 1.2rem;
   margin-top: 2em;
+  font-weight: 400;
 }
 
 h1::before { color: var(--maincolor); content: '# '; }
@@ -179,6 +180,7 @@ h6::before { color: var(--maincolor); content: '###### '; }
   color: #999;
   letter-spacing: -0.5px;
   font-style: italic;
+  font-family: "Lato", sans-serif;
 }
 
 .toc {
@@ -197,6 +199,8 @@ footer {
   border-top: 0.4rem dotted var(--bordercl);
   padding: 2rem 0rem;
   margin-top: 2rem;
+  font-family: "Lato", sans-serif;
+  font-style: italic;
 }
 .soc {
   display: flex;

@@ -1,23 +1,28 @@
 <footer>
-  <div style="display:flex">
+  <div style="display: flex">
     {{- range $index, $key := .Site.Params.Social -}}
-    <a class="soc" href="{{ $key.url }}" rel="me" title="{{ $key.name }}"><i data-feather="{{ $key.icon }}"></i></a>
+    <a class="soc" href="{{ $key.url }}" rel="me" title="{{ $key.name }}"
+      ><i data-feather="{{ $key.icon }}"></i
+    ></a>
     <a class="border"></a>
     {{- end -}}
   </div>
   <div class="footer-info">
-    &copy; {{ dateFormat "2006" now }} {{ with .Site.Copyright }} {{ . }}. {{ end }} 
-    All opinions are my own and not those of my current or former employers. <br/>
-    Built with <a href="https://gohugo.io">Hugo</a>, using a custom theme based on <a
-    href="https://github.com/athul/archie">Archie</a>.
+    &copy; {{ dateFormat "2006" now }} {{ with .Site.Copyright }} {{ . }}. {{
+    end }}
+    <p>
+      All opinions are my own and are not necessarily endorsed by any of my current or former employers.
+    </p>
+    <p>
+      Built with <a href="https://gohugo.io">Hugo</a>, using a custom theme
+      based on <a href="https://github.com/athul/archie">Archie</a>. Typeset in
+      Source Serif 4 for headings, Lato for body copy, and Roboto Mono for code.
+    </p>
   </div>
 </footer>
-{{ if not hugo.IsServer }}
-{{ template "_internal/google_analytics.html" . }}
-{{ end }}
-
-{{- if (isset .Site.Params "social") -}}
+{{ if not hugo.IsServer }} {{ template "_internal/google_analytics.html" . }} {{
+end }} {{- if (isset .Site.Params "social") -}}
 <script>
-  feather.replace()
+  feather.replace();
 </script>
 {{- end -}}
