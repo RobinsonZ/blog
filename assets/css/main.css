@@ -116,7 +116,7 @@ figure h4::before {
 
 /* Code blocks */
 code {
-  font-family: 'Roboto Mono', monospace;
+  font-family: 'Cascadia Mono', monospace;
   background-color: #f1f1f1;
   padding: .1em .2em;
 }
