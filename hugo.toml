@@ -9,7 +9,6 @@ copyright = "Zack Robinson"
 [params]
 subtitle = "Some thoughts on software, systems, and special interests."
 paginate = 10
-mode = 'toggle'
 reading_speed = 225
 
 [[menu.main]]
